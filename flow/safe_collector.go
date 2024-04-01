@@ -7,11 +7,11 @@ type safeCollector[T any] struct {
 	emit Collectable[T]
 }
 
-func (s *safeCollector[T]) safeEmit(value T) error {
+func (s *safeCollector[T]) safeEmit(t *T) error {
 	select {
 	case <-s.ctx.Done():
 		return s.ctx.Err()
 	default:
-		return s.emit(value)
+		return s.emit(t)
 	}
 }

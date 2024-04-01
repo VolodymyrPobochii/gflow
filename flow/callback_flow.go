@@ -3,9 +3,9 @@ package flow
 import "context"
 
 type ProducerScope[T any] interface {
-	Send(value T)
-	SendBlocking(value T)
-	AwaitClose(cleanup func())
+	Send(t *T)
+	SendBlocking(t *T)
+	AwaitClose(cleanup func(error))
 	Close()
 }
 

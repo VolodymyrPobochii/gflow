@@ -39,13 +39,11 @@ func (c *CallbackFlowBuilder[T]) Collect(emit Collectable[T]) {
 		for {
 			select {
 			case <-c.ctx.Done():
-				println("context done")
 				close(cp.ch)
 				cp.exit <- c.ctx.Err()
 				return
 			case v, ok := <-cp.ch:
 				if !ok {
-					println("channel closed")
 					cp.exit <- errors.New("channel closed")
 					return
 				}
@@ -68,25 +66,23 @@ func newCallbackBuilder[T any](ctx context.Context, block func(send ProducerScop
 
 type channelProducer[T any] struct {
 	ctx  context.Context
-	ch   chan T
+	ch   chan *T
 	exit chan error
 	wg   sync.WaitGroup
 }
 
-func (c *channelProducer[T]) Send(value T) {
+func (c *channelProducer[T]) Send(t *T) {
 	c.wg.Add(1)
-	c.ch <- value
+	c.ch <- t
 }
 
-func (c *channelProducer[T]) SendBlocking(value T) {
+func (c *channelProducer[T]) SendBlocking(t *T) {
 	c.wg.Add(1)
-	c.ch <- value
+	c.ch <- t
 }
 
-func (c *channelProducer[T]) AwaitClose(cleanup func()) {
-	err := <-c.exit
-	println(err)
-	cleanup()
+func (c *channelProducer[T]) AwaitClose(cleanup func(error)) {
+	cleanup(<-c.exit)
 }
 
 func (c *channelProducer[T]) Close() {
@@ -95,11 +91,11 @@ func (c *channelProducer[T]) Close() {
 }
 
 func newChannelProducer[T any](ctx context.Context, capacity int) *channelProducer[T] {
-	var ch chan T
+	var ch chan *T
 	if capacity == BUFFERED {
-		ch = make(chan T, 64)
+		ch = make(chan *T, 16)
 	} else {
-		ch = make(chan T)
+		ch = make(chan *T)
 	}
 	return &channelProducer[T]{
 		ctx:  ctx,
