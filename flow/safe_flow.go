@@ -7,7 +7,7 @@ type safeFlow[T any] struct {
 	block func(emit Collectable[T])
 }
 
-func newSafeFlow[T any](ctx context.Context, block func(emit Collectable[T])) *safeFlow[T] {
+func newSafe[T any](ctx context.Context, block func(emit Collectable[T])) *safeFlow[T] {
 	return &safeFlow[T]{ctx: ctx, block: block}
 }
 

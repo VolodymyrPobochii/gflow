@@ -23,7 +23,7 @@ func TestNewFlow(t *testing.T) {
 }
 
 func getFlow(ctx context.Context) Flow[string] {
-	return flow[string](ctx, func(emit Collectable[string]) {
+	return New[string](ctx, func(emit Collectable[string]) {
 		println("sending value...")
 		for i := 0; i < 10; i++ {
 			if err := emit(string(rune(i+35)) + ": hey there!"); err != nil {
@@ -36,7 +36,7 @@ func getFlow(ctx context.Context) Flow[string] {
 }
 
 func getCBFlow(ctx context.Context) Flow[string] {
-	return callbackFlow[string](ctx, func(ps ProducerScope[string]) {
+	return NewCallback[string](ctx, func(ps ProducerScope[string]) {
 		for i := 0; i < 100; i++ {
 			go func(i int) {
 				value := string(rune(i+35)) + ": hey there!"

@@ -9,6 +9,6 @@ type ProducerScope[T any] interface {
 	close()
 }
 
-func callbackFlow[T any](ctx context.Context, block func(send ProducerScope[T])) Flow[T] {
-	return newCallbackFlowBuilder(ctx, block)
+func NewCallback[T any](ctx context.Context, block func(send ProducerScope[T])) Flow[T] {
+	return newCallbackBuilder(ctx, block)
 }

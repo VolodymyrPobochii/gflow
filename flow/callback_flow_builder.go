@@ -58,7 +58,7 @@ func (c *CallbackFlowBuilder[T]) Collect(emit Collectable[T]) {
 	c.collectTo(cp)
 }
 
-func newCallbackFlowBuilder[T any](ctx context.Context, block func(send ProducerScope[T])) *CallbackFlowBuilder[T] {
+func newCallbackBuilder[T any](ctx context.Context, block func(send ProducerScope[T])) *CallbackFlowBuilder[T] {
 	return &CallbackFlowBuilder[T]{
 		ctx:      ctx,
 		block:    block,
