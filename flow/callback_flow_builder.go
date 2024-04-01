@@ -73,23 +73,23 @@ type channelProducer[T any] struct {
 	wg   sync.WaitGroup
 }
 
-func (c *channelProducer[T]) send(value T) {
+func (c *channelProducer[T]) Send(value T) {
 	c.wg.Add(1)
 	c.ch <- value
 }
 
-func (c *channelProducer[T]) sendBlocking(value T) {
+func (c *channelProducer[T]) SendBlocking(value T) {
 	c.wg.Add(1)
 	c.ch <- value
 }
 
-func (c *channelProducer[T]) awaitClose(cleanup func()) {
+func (c *channelProducer[T]) AwaitClose(cleanup func()) {
 	err := <-c.exit
 	println(err)
 	cleanup()
 }
 
-func (c *channelProducer[T]) close() {
+func (c *channelProducer[T]) Close() {
 	c.wg.Wait()
 	close(c.ch)
 }
