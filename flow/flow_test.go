@@ -40,14 +40,14 @@ func getCBFlow(ctx context.Context) Flow[string] {
 		for i := 0; i < 100; i++ {
 			go func(i int) {
 				value := string(rune(i+35)) + ": hey there!"
-				ps.send(value)
+				ps.Send(value)
 				println("value sent:", value)
 			}(i)
 		}
 
-		ps.close()
+		ps.Close()
 
-		ps.awaitClose(func() {
+		ps.AwaitClose(func() {
 			println("cleaned up")
 		})
 	})
